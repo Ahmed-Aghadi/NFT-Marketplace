@@ -8,15 +8,10 @@ import { nftaddress, nftmarketaddress } from "../config"
 import NFT from "../artifacts/contracts/NFT.sol/NFT.json"
 import Market from "../artifacts/contracts/NFTMarket.sol/NFTMarket.json"
 
-let rpcEndpoint = null
-
-if (process.env.RPC_URL) {
-    rpcEndpoint = process.env.RPC_URL
-}
-
 export default function Home() {
     const [nfts, setNfts] = useState([])
     const [loadingState, setLoadingState] = useState("not-loaded")
+    const rpcEndpoint = process.env.NEXT_PUBLIC_RPC_URL
     useEffect(() => {
         loadNFTs()
     }, [])
@@ -70,9 +65,12 @@ export default function Home() {
                         <div
                             key={i}
                             className="border shadow rounded-xl overflow-hidden flex flex-1 flex-col justify-between"
+                            style={{ maxHeight: "575px" }}
                         >
-                            <img className="max-h-72" src={nft.image} />
-                            <div className="p-4">
+                            <div className="max-h-72 h-64 mb-1">
+                                <img src={nft.image} className="max-h-72 mx-auto" />
+                            </div>
+                            <div className="p-4 pt-10">
                                 <p style={{ height: "64px" }} className="text-2xl font-semibold">
                                     {nft.name}
                                 </p>

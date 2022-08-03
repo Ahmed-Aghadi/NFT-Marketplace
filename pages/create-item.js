@@ -51,6 +51,8 @@ export default function CreateItem() {
         const connection = await web3Modal.connect()
         const provider = new ethers.providers.Web3Provider(connection)
         const signer = provider.getSigner()
+        console.log("signer :")
+        console.log(signer)
 
         let contract = new ethers.Contract(nftaddress, NFT.abi, signer)
         console.log("Creating token...")
