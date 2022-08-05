@@ -11,7 +11,7 @@ import Market from "../public/constants/NFTMarket.json"
 export default function Home() {
     const [nfts, setNfts] = useState([])
     const [loadingState, setLoadingState] = useState("not-loaded")
-    const rpcEndpoint = process.env.NEXT_PUBLIC_RPC_URL
+    const rpcEndpoint = process.env.NEXT_PUBLIC_RPC_URL || "https://matic-mumbai.chainstacklabs.com"
     useEffect(() => {
         loadNFTs()
     }, [])
