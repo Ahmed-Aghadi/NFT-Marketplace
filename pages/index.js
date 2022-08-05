@@ -13,13 +13,19 @@ export default function Home() {
     const [loadingState, setLoadingState] = useState("not-loaded")
     const rpcEndpoint = process.env.NEXT_PUBLIC_RPC_URL || "https://matic-mumbai.chainstacklabs.com"
     useEffect(() => {
+        console.log("110")
         loadNFTs()
     }, [])
     async function loadNFTs() {
+        console.log("111")
         const provider = new ethers.providers.JsonRpcProvider(rpcEndpoint)
+        console.log("112")
         const tokenContract = new ethers.Contract(nftaddress, NFT.abi, provider)
+        console.log("113")
         const marketContract = new ethers.Contract(nftmarketaddress, Market.abi, provider)
+        console.log("114")
         const data = await marketContract.fetchMarketItems()
+        console.log("115")
 
         const items = await Promise.all(
             data.map(async (i) => {
@@ -55,7 +61,20 @@ export default function Home() {
         await transaction.wait()
         loadNFTs()
     }
-    if (loadingState === "loaded" && !nfts.length)
+    if (loadingState === "not-loaded") {
+        return (
+            <div className="flex w-full flex-1 flex-col items-center  px-20">
+                <div className="mt-12 w-1/2 animate-pulse flex-row items-center justify-center space-x-1 rounded-xl border p-6 ">
+                    <div className="flex flex-col space-y-2">
+                        <div className="h-6 w-11/12 rounded-md bg-gray-300 "></div>
+                        <div className="h-6 w-10/12 rounded-md bg-gray-300 "></div>
+                        <div className="h-6 w-9/12 rounded-md bg-gray-300 "></div>
+                        <div className="h-6 w-9/12 rounded-md bg-gray-300 "></div>
+                    </div>
+                </div>
+            </div>
+        )
+    } else if (loadingState === "loaded" && !nfts.length)
         return <h1 className="px-20 py-10 text-3xl">No items in marketplace</h1>
     return (
         <div className="flex justify-center  text-center">
