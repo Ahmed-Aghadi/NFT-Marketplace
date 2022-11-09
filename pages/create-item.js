@@ -1,10 +1,7 @@
 import { useState } from "react"
 import { ethers } from "ethers"
-import { create as ipfsHttpClient } from "ipfs-http-client"
 import { useRouter } from "next/router"
 import Web3Modal from "web3modal"
-
-const client = ipfsHttpClient({ url: "https://ipfs.infura.io:5001/api/v0" })
 
 import { nftaddress, nftmarketaddress } from "../config"
 
@@ -12,33 +9,46 @@ import NFT from "../public/constants/NFT.json"
 import Market from "../public/constants/NFTMarket.json"
 
 export default function CreateItem() {
-    const [fileUrl, setFileUrl] = useState(null)
+    const [file, setFile] = useState(null)
     const [formInput, updateFormInput] = useState({ price: "", name: "", description: "" })
     const router = useRouter()
 
     async function onChange(e) {
         const file = e.target.files[0]
-        try {
-            const added = await client.add(file, {
-                progress: (prog) => console.log(`received: ${prog}`),
-            })
-            const url = `https://ipfs.infura.io/ipfs/${added.path}`
-            setFileUrl(url)
-        } catch (error) {
-            console.log("Error uploading file: ", error)
-        }
+        setFile(file)
     }
     async function createMarket() {
         const { name, description, price } = formInput
-        if (!name || !description || !price || !fileUrl) return
-        const data = JSON.stringify({
-            name,
-            description,
-            image: fileUrl,
-        })
+        if (!name || !description || !price || !file) return
         try {
-            const added = await client.add(data)
-            const url = `https://ipfs.infura.io/ipfs/${added.path}`
+            const body = new FormData()
+            body.append("file", file)
+            const resForImageCid = await fetch(
+                process.env.NEXT_PUBLIC_API_URL + "/api/uploadImage",
+                {
+                    method: "POST",
+                    body: body,
+                }
+            )
+            const jsonOfResForImageCid = await resForImageCid.json()
+            const imageCid = jsonOfResForImageCid.cid
+
+            const data = JSON.stringify({
+                name,
+                description,
+                image: `https://${imageCid}.ipfs.w3s.link/image`,
+            })
+            console.log("data", data)
+            const resForJsonCid = await fetch(process.env.NEXT_PUBLIC_API_URL + "/api/uploadJson", {
+                method: "POST",
+                body: JSON.stringify(data),
+                headers: { "Content-Type": "application/json" },
+            })
+
+            const jsonOfResForJsonCid = await resForJsonCid.json()
+
+            const jsonCid = jsonOfResForJsonCid.cid
+            const url = `https://${jsonCid}.ipfs.w3s.link/data.json`
             console.log("url = " + url)
             createSale(url)
         } catch (error) {
@@ -98,7 +108,7 @@ export default function CreateItem() {
                     onChange={(e) => updateFormInput({ ...formInput, price: e.target.value })}
                 />
                 <input type="file" name="Asset" className="my-4" onChange={onChange} />
-                {fileUrl && <img className="rounded mt-4" width="350" src={fileUrl} />}
+                {/* {fileUrl && <img className="rounded mt-4" width="350" src={fileUrl} />} */}
                 <button
                     onClick={createMarket}
                     className="font-bold mt-4 bg-pink-500 text-white rounded p-4 shadow-lg"
