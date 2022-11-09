@@ -5,7 +5,7 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 User can create NFT by uploading image and it will be listed in the marketplace.
 
-Try this at : [NFT Marketplace](https://summer-breeze-5006.on.fleek.co/)
+Try this at : [NFT Marketplace](https://nft-marketplace-ebon.vercel.app/)
 
 ## Getting Started
 
