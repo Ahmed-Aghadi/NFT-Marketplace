@@ -36,7 +36,7 @@ export default function CreateItem() {
             const data = JSON.stringify({
                 name,
                 description,
-                image: `https://${imageCid}.ipfs.w3s.link/image`,
+                image: `https://${imageCid}.ipfs.dweb.link/image`,
             })
             console.log("data", data)
             const resForJsonCid = await fetch(process.env.NEXT_PUBLIC_API_URL + "/api/uploadJson", {
@@ -48,7 +48,7 @@ export default function CreateItem() {
             const jsonOfResForJsonCid = await resForJsonCid.json()
 
             const jsonCid = jsonOfResForJsonCid.cid
-            const url = `https://${jsonCid}.ipfs.w3s.link/data.json`
+            const url = `https://${jsonCid}.ipfs.dweb.link/data.json`
             console.log("url = " + url)
             createSale(url)
         } catch (error) {

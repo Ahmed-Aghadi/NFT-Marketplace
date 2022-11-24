@@ -17,20 +17,18 @@ export default function Home() {
         loadNFTs()
     }, [])
     async function loadNFTs() {
-        console.log("111")
         const provider = new ethers.providers.JsonRpcProvider(rpcEndpoint)
-        console.log("112")
+
         const tokenContract = new ethers.Contract(nftaddress, NFT.abi, provider)
-        console.log("113")
+
         const marketContract = new ethers.Contract(nftmarketaddress, Market.abi, provider)
-        console.log("114")
+
         const data = await marketContract.fetchMarketItems()
-        console.log("115")
 
         const items = await Promise.all(
             data.map(async (i) => {
                 const tokenUri = await tokenContract.tokenURI(i.tokenId)
-                const meta = await axios.get(tokenUri)
+                const meta = await axios.get(tokenUri.replace("ipfs.w3s.", "ipfs.dweb."))
                 const data = JSON.parse(meta.data)
                 console.log("data", data)
                 let price = ethers.utils.formatUnits(i.price.toString(), "ether")
@@ -39,7 +37,7 @@ export default function Home() {
                     itemId: i.itemId.toNumber(),
                     seller: i.seller,
                     owner: i.owner,
-                    image: data.image,
+                    image: data.image.replace("ipfs.w3s.", "ipfs.dweb."),
                     name: data.name,
                     description: data.description,
                 }
