@@ -27,14 +27,14 @@ export default function MyAssets() {
         const items = await Promise.all(
             data.map(async (i) => {
                 const tokenUri = await tokenContract.tokenURI(i.tokenId)
-                const meta = await axios.get(tokenUri)
+                const meta = await axios.get(tokenUri.replace("ipfs.w3s.", "ipfs.dweb."))
                 let price = ethers.utils.formatUnits(i.price.toString(), "ether")
                 let item = {
                     price,
                     tokenId: i.tokenId.toNumber(),
                     seller: i.seller,
                     owner: i.owner,
-                    image: meta.data.image,
+                    image: meta.data.image.replace("ipfs.w3s.", "ipfs.dweb."),
                 }
                 return item
             })
