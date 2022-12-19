@@ -28,7 +28,8 @@ export default function CreatorDashboard() {
         const items = await Promise.all(
             data.map(async (i) => {
                 const tokenUri = await tokenContract.tokenURI(i.tokenId)
-                const meta = await axios.get(tokenUri)
+                const meta = await axios.get(tokenUri.replace("ipfs.w3s.", "ipfs.dweb."))
+                const data = JSON.parse(meta.data)
                 let price = ethers.utils.formatUnits(i.price.toString(), "ether")
                 let item = {
                     price,
@@ -36,7 +37,7 @@ export default function CreatorDashboard() {
                     seller: i.seller,
                     owner: i.owner,
                     sold: i.sold,
-                    image: meta.data.image,
+                    image: data.image.replace("ipfs.w3s.", "ipfs.dweb."),
                 }
                 return item
             })
